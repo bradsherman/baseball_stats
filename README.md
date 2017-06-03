@@ -15,4 +15,4 @@ python run.py
 ```
 The resulting csv should be outputted in just a few seconds!
 
-**NOTE:** I wrote this using python 3.6.1, it does not pass the tests or even run to completion with python 2, so please make sure to test it with python 3.
+**NOTE:** I wrote this using python 3.6.1, and at first it did not run with python 2, but I think I fixed it. However, if any issues pop up please run it with python 3.
