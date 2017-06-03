@@ -80,23 +80,21 @@ Main program logic
 def main():
     # define some constants
     min_PA = 25
-    team = False
     cols = ['SubjectId','Stat', 'Split', 'Subject', 'Value']
     infile = "./data/raw/pitchdata.csv"
     outfile = "./data/processed/output.csv"
+    combinations_file = "./data/reference/combinations.txt"
     output = open(outfile, 'w')
     output.write(",".join(cols) + "\n")
-    combinations_file = "./data/reference/combinations.txt"
     pitch_stats = pd.read_csv(infile)
     combos = pd.read_csv(combinations_file)
 
     # for each combination, let's crunch some data
     for _, combo in combos.iterrows():
         # define some constants that need to be redefined on each iteration
-        team = False
-        side = ""
-        split_clause = ""
-        subject_id = 0
+        team = False      # whether or not our subject is a team or player
+        side = ""         # which side the player throws/hits 
+        split_clause = "" # whether we are filtering pitcher or hitter's side
 
         """
         stat: (AVG, OBP, SLG, OPS)
@@ -122,6 +120,7 @@ def main():
 
         # shrink our dataset to just the necessary information
         grouped_pitch_stats = group_and_prune(filtered_pitch_stats, subject, min_PA)
+
         # calculate our final dataset, and only keep the relevant information
         result_pitch_stats = calculate_stat(stat, grouped_pitch_stats)
         final_pitch_stats = result_pitch_stats[[subject, stat]]
@@ -137,11 +136,11 @@ def main():
         
     output.close()
 
-    # read data back in and sort
+    # read data back in and sort on the first four columns
     result_df = pd.read_csv(outfile)
     sorted_df = result_df.sort_values(cols[:-1])
     # round statistic values
-    sorted_df['Value'] = round(sorted_df['Value'], 3)
+    sorted_df['Value'] = sorted_df['Value'].round(3)
     # save back to the output file
     sorted_df.to_csv(outfile, index=False)
 
